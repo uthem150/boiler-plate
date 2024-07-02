@@ -6,7 +6,7 @@ const userSchema = mongoose.Schema({
     maxlength: 50,
   },
   email: {
-    type: string,
+    type: String,
     trim: true, //빈칸 없애주는 역할
     unique: 1, //동일한 email을 쓰지 못하도록
   },
