@@ -18,7 +18,7 @@ mongoose
   .catch((err) => console.log(err));
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello World~!");
 });
 
 // 회원가입 위한 라우트
