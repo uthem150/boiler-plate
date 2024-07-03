@@ -53,6 +53,9 @@ userSchema.pre("save", function (next) {
         user.password = hash;
         next();
       });
+    } else {
+      //비밀번호 바꾸는게 아닐 때
+      next();
     }
   });
 });
