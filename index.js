@@ -3,6 +3,8 @@ const app = express(); //새로운 express app생성
 const port = 5000; /// 서버가 사용할 포트 설정
 const { User } = require("./models/Users"); //유저 모델을 가져옴
 
+const config = require("./config/key");
+
 //미들웨어 설정
 app.use(express.json()); //JSON 형식 본문 파싱
 app.use(express.urlencoded({ extended: true })); //URL-encoded 형식 본문 파싱
@@ -10,10 +12,7 @@ app.use(express.urlencoded({ extended: true })); //URL-encoded 형식 본문 파
 //mongoose 모듈을 통해 MongoDB 데이터베이스와 연결
 const mongoose = require("mongoose");
 mongoose
-  .connect(
-    "mongodb+srv://ynmhobby:rHFLIhbz9wNINzVh@boiler-plate.eiv3gwi.mongodb.net/?retryWrites=true&w=majority&appName=boiler-plate",
-    {}
-  )
+  .connect(config.mongoURI, {})
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
 
