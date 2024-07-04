@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const config = require("./config/key");
 
 const { User } = require("./models/Users"); //유저 모델을 가져옴
+const { auth } = require("./middelware/auth");
 
 //미들웨어 설정
 app.use(express.json()); //JSON 형식 본문 파싱
@@ -24,7 +25,7 @@ app.get("/", (req, res) => {
 });
 
 // 회원가입 위한 라우트
-app.post("/register", async (req, res) => {
+app.post("/api/users/register", async (req, res) => {
   // 클라이언트가 보낸 데이터를 받아 새로운 User 객체 생성
   const user = new User(req.body);
 
@@ -43,7 +44,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.post("/login", async (req, res) => {
+app.post("/api/users/login", async (req, res) => {
   try {
     // 이메일 기반으로 사용자 DB에서 찾음
     const user = await User.findOne({ email: req.body.email });
@@ -79,6 +80,22 @@ app.post("/login", async (req, res) => {
       error: err,
     });
   }
+});
+
+//사용자가 인증되었는지 확인(auth 미들웨어를 사용하여 요청을 처리하기 전에 사용자를 인증)
+app.get("/api/users/auth", auth, (req, res) => {
+  //미들웨어를 통과한다면, 사용자 정보와 인증 상태를 JSON 형식으로 응답
+  res.status(200).json({
+    _id: req.user._id,
+    //role 0 : admin , role 1 : 일반유저
+    isAdmin: req.user.role === 0 ? false : true,
+    isAuth: true,
+    email: req.user.email,
+    name: req.user.name,
+    lastname: req.user.lastname,
+    role: req.user.role,
+    image: req.user.image,
+  });
 });
 
 //서버를 port 번호(5000)로 시작

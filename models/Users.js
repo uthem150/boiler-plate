@@ -90,6 +90,23 @@ userSchema.methods.generateToken = async function (cb) {
   }
 };
 
+userSchema.statics.findByToken = async function (token, cb) {
+  try {
+    //토큰을 decode
+    const decoded = jwt.verify(token, "secretToken");
+
+    //유저 id를 이용해서 유저를 찾음
+    const user = await this.findOne({ _id: decoded, token: token });
+    if (!user) {
+      return cb(null, null); // 유저가 없을 경우
+    }
+
+    cb(null, user);
+  } catch (err) {
+    cb(err);
+  }
+};
+
 // 모델로 schema 감쌈. (모델의 이름, 스키마)
 const User = mongoose.model("User", userSchema);
 
