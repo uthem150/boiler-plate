@@ -1,4 +1,4 @@
-const { User } = require("../models/User");
+const { User } = require("../models/Users");
 
 let auth = (req, res, next) => {
   //client 쿠키에서 x_auth라는 변수명으로 넣었던 토큰 가져옴

@@ -68,7 +68,7 @@ app.post("/api/users/login", async (req, res) => {
 
         //쿠키에 x_auth를 변수명으로 토큰 저장하고, client에게 응답
         res
-          .cookie(("x_auth", user.token))
+          .cookie("x_auth", user.token)
           .status(200)
           .json({ loginSuccess: true, userId: user._id });
       });
@@ -96,6 +96,20 @@ app.get("/api/users/auth", auth, (req, res) => {
     role: req.user.role,
     image: req.user.image,
   });
+});
+
+app.get("/api/users/logout", auth, async (req, res) => {
+  try {
+    await User.findOneAndUpdate(
+      { _id: req.user._id },
+      { token: "" } // 토큰을 지워줌
+    );
+    return res.status(200).send({
+      success: true,
+    });
+  } catch (err) {
+    return res.json({ success: false, err });
+  }
 });
 
 //서버를 port 번호(5000)로 시작

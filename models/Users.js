@@ -90,21 +90,21 @@ userSchema.methods.generateToken = async function (cb) {
   }
 };
 
-userSchema.statics.findByToken = async function (token, cb) {
-  try {
-    //토큰을 decode
-    const decoded = jwt.verify(token, "secretToken");
+userSchema.statics.findByToken = function (token, cb) {
+  //호출된 현재 모델 참조
+  var user = this;
 
-    //유저 id를 이용해서 유저를 찾음
-    const user = await this.findOne({ _id: decoded, token: token });
-    if (!user) {
-      return cb(null, null); // 유저가 없을 경우
-    }
+  //token, "secretToken" 사용하여 토큰을 검증 (성공하면 decoded 변수에 디코딩된 토큰 데이터가 저장)
+  jwt.verify(token, "secretToken", function (err, decoded) {
+    if (err) return cb(err);
 
-    cb(null, user);
-  } catch (err) {
-    cb(err);
-  }
+    //토큰이 검증 성공하면
+    user
+      //user 모델에서 _id가 decoded와 일치하고 token이 주어진 토큰과 일치하는 유저를 찾음
+      .findOne({ _id: decoded, token: token })
+      .then((user) => cb(null, user))
+      .catch((err) => cb(err));
+  });
 };
 
 // 모델로 schema 감쌈. (모델의 이름, 스키마)
