@@ -1,8 +1,8 @@
 const express = require("express"); //express 모듈을 가져옴
 const app = express(); //새로운 express app생성
-const port = 5000; /// 서버가 사용할 포트 설정
 const cookieParser = require("cookie-parser");
 const config = require("./config/key");
+const port = 5000; /// 서버가 사용할 포트 설정
 
 const { User } = require("./models/Users"); //유저 모델을 가져옴
 const { auth } = require("./middelware/auth");
@@ -22,6 +22,10 @@ mongoose
 //루트 경로에 대한 GET 요청 처리
 app.get("/", (req, res) => {
   res.send("Hello World~!");
+});
+
+app.get("/api/hello", (req, res) => {
+  res.send("안녕하세요!!");
 });
 
 // 회원가입 위한 라우트
