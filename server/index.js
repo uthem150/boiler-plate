@@ -33,15 +33,24 @@ app.post("/api/users/register", async (req, res) => {
   // 클라이언트가 보낸 데이터를 받아 새로운 User 객체 생성
   const user = new User(req.body);
 
-  //사용자 데이터 MongoDB에 저장
   try {
+    // 이메일 중복 여부 확인
+    const existingUser = await User.findOne({ email: user.email });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "이미 등록된 이메일입니다.",
+      });
+    }
+
+    // 사용자 데이터 MongoDB에 저장
     await user.save();
     res.status(200).json({
       success: true,
     });
   } catch (err) {
     console.error(err);
-    res.json({
+    res.status(500).json({
       success: false,
       err: err,
     });

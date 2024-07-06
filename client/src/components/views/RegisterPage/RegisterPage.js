@@ -43,8 +43,10 @@ function RegisterPage() {
 
     dispatch(registerUser(body)).then((response) => {
       // 로그인에 성공하면, 처음 페이지로 이동
-      if (response.payload.success) {
+      if (response.payload.status === 200 && response.data.success) {
         navigate("/login");
+      } else if (response.payload.status === 400) {
+        alert("이미 등록된 이메일입니다.");
       } else {
         alert("회원가입에 오류가 발생했습니다");
       }
